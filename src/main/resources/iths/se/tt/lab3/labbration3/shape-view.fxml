@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import iths.se.tt.lab3.labbration3.ShapeType?>
+<?import javafx.scene.text.Text?>
+<AnchorPane fx:controller="iths.se.tt.lab3.labbration3.shapeViewController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+      <Canvas fx:id="canvas" height="800.0" width="800.0" onMouseClicked="#onCanvasClicked"/>
+      <ChoiceBox fx:id="choiceBox" layoutX="22.0" layoutY="21.0" prefWidth="150.0">
+         <items>
+            <FXCollections fx:factory="observableArrayList">
+               <ShapeType fx:value="Circle"/>
+               <ShapeType fx:value="Square"/>
+            </FXCollections>
+         </items>
+      </ChoiceBox>
+      <ColorPicker fx:id="colorPicker" layoutX="187.0" layoutY="21.0" />
+      <Text fx:id="size" layoutX="300.0" layoutY="21.0" text="Size"/>
+      <Slider fx:id="shapeSize" layoutY="21.0" layoutX="335.0"/>
+      <CheckBox fx:id="selectMode" mnemonicParsing="false" text="Select Mode"/>
+      <Button fx:id="save" layoutX="734.0" layoutY="21.0" mnemonicParsing="false" text="Save" />
+      <Button fx:id="Undo" layoutX="672.0" layoutY="21.0" mnemonicParsing="false" text="Undo" onAction="#undo"/>
+</AnchorPane>
