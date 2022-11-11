@@ -16,28 +16,34 @@ public class Square extends Shape{
         graphicsContext.fillRect(this.getX()-squareSize, this.getY()-squareSize, this.getSize(), this.getSize());
     }
 
+    /*
+    isInside is the coordinates of a shape
+     */
+    @Override
+    public boolean coordinatesInsideShape(double x, double y) {
+        double squareSize = this.getSize()/2;
+        return isInside(x, getX()-squareSize, getX() + squareSize ) &&
+                isInside(y, getY() - squareSize, getY() + squareSize);
+    }
+
+    private boolean isInside(double value, double minValueInclusive, double maxValueInclusive) {
+        return value >= minValueInclusive && value<= maxValueInclusive;
+    }
+
+    /*
+    The new square created after changing size or color on an already drawn square.
+     */
+    @Override
+    public Shape adjustingShapeLook(Color color, double size) {
+        return new Square(color, size, this.getX(), this.getY());
+    }
+
     @Override
     public String getAsSvg() {
         String color = "#" + getColor().toString().subSequence(2,10);
 
-        return "<" + "rect" + "x=\"" + getX() + "\"" + "y=\"" + getY() + "\""
-                + "width=\"" + getSize() + "\"" + "height=\"" + getSize() + "\""
-                +"fill=\"" + color + "\"" + "/>";
-    }
-
-    @Override
-    public boolean coordinatesInShapeArea(double x, double y) {
-        double squareSize = this.getSize()/2;
-        return isBetween(x, getX()-squareSize, getX() + squareSize ) &&
-                isBetween(y, getY() - squareSize, getY() + squareSize);
-    }
-
-    private boolean isBetween(double value, double minValueInclusive, double maxValueInclusive) {
-        return value >= minValueInclusive && value<= maxValueInclusive;
-    }
-
-    @Override
-    public Shape changeLook(Color color, double size) {
-        return new Square(color, size, this.getX(), this.getY());
+        return "<" + "rect" + " x=\"" + getX() + "\"" + " y=\"" + getY() + "\""
+                + " width=\"" + getSize() + "\"" + " height=\"" + getSize() + "\""
+                + " fill=\"" + color + "\"" + " />";
     }
 }

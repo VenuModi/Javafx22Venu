@@ -34,8 +34,9 @@ public abstract class Shape{
     }
 
     public abstract void drawShape(GraphicsContext graphicsContext);
-    public abstract String getAsSvg();
+    public abstract boolean coordinatesInsideShape(double x, double y);
+    public abstract Shape adjustingShapeLook(Color color, double size);
 
-    public abstract boolean coordinatesInShapeArea(double x, double y);
-    public abstract Shape changeLook(Color color, double size);
+
+    public abstract String getAsSvg();
 }

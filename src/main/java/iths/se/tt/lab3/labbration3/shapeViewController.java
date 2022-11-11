@@ -36,37 +36,46 @@ public class shapeViewController {
         choiceBox.valueProperty().bindBidirectional(model.selectedShapeTypeProperty());
         canvas.heightProperty().addListener(observable -> drawShape());
         canvas.widthProperty().addListener(observable -> drawShape());
-        selectMode.selectedProperty().bindBidirectional(model.inSelectModeProperty());
+        selectMode.selectedProperty().bindBidirectional(model.selectModeProperty());
     }
+
+    /*
+    This method is basically to draw shapes on canvas. The if statement is to draw shapes otherwise
+    else to change the size or the color of the already drawn shape.
+     */
     public void onCanvasClicked(MouseEvent mouseEvent){
         if (!model.inSelectMode())
-            canvasClickedInNormalMode(mouseEvent);
+            createShapes(mouseEvent);
         else
-            canvasClickedInSelectMode(mouseEvent);
-//        model.isInSelectMode();
+            modifyExistingShapes(mouseEvent);
         drawShape();
     }
-
-    private void canvasClickedInSelectMode(MouseEvent mouseEvent) {
-        model.getShapeByCoordinates(mouseEvent.getX(), mouseEvent.getY())
-                .ifPresent(this::setNewShapeFromSelectedMode);
+    /*
+    This method is for changing the color or size on already drawn shape.
+     */
+    private void modifyExistingShapes(MouseEvent mouseEvent) {
+        model.getShapeCoordinates(mouseEvent.getX(), mouseEvent.getY())
+                .ifPresent(this::setModifiedShape);
     }
 
-    private void setNewShapeFromSelectedMode(Shape shape) {
-        Shape newShape = shape.changeLook(model.getColor(), model.getSize());
+    private void setModifiedShape(Shape shape) {
+        Shape newShape = shape.adjustingShapeLook(model.getColor(), model.getSize());
         model.replaceShape(newShape, shape);
     }
 
-    private void canvasClickedInNormalMode(MouseEvent mouseEvent) {
+    private void createShapes(MouseEvent mouseEvent) {
         Shape newShape = getNewShapeBySelectedType(mouseEvent);
         model.addShape(newShape);
         drawShape();
     }
-
+    /*
+    Basically to select the shape to be drawn.
+     */
     public Shape getNewShapeBySelectedType(MouseEvent mouseEvent){
         return switch (model.getSelectedShapeType()){
             case Circle -> ShapeFactory.getCircle(model.getColor(), model.getSize(), mouseEvent.getX(), mouseEvent.getY());
             case Square -> ShapeFactory.getSquare(model.getColor(), model.getSize(), mouseEvent.getX(), mouseEvent.getY());
+            case Triangle -> ShapeFactory.getTriangle(model.getColor(), model.getSize(), mouseEvent.getX(), mouseEvent.getY());
         };
     }
 
@@ -81,18 +90,18 @@ public class shapeViewController {
 
     public void undo(){
         try {
-            model.Undo();
+            model.undo();
             drawShape();
         } catch (Exception e){
             System.out.println("Draw something on the canvas first!!");
         }
     }
-//    public void save(){
-//        try {
-//            model.writeToSVG();
-//            System.out.println("Saved");
-//        } catch (Exception e){
-//            System.out.println("You have not saved your file.");
-//        }
-//    }
+    public void save(){
+        try {
+            model.writeToSvg();
+            System.out.println("Saved");
+        }catch (Exception e){
+            System.out.println("Save the file first");
+        }
+    }
 }

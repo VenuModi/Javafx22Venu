@@ -8,19 +8,19 @@ import java.util.*;
 public class Model {
     private final ObjectProperty<Color> color;
     private final DoubleProperty size;
-   // private final SvgWriter svgWriter;
     private final List<Shape> shapes = new ArrayList<>();
     private final Deque<Shape> history = new ArrayDeque<>();
-    private final Map<Shape, Shape> replacements = new HashMap<>();
-    private final ObjectProperty <ShapeType> selectedShapeType;
+    private final Map<Shape, Shape> replacements = new HashMap<>(); // for replacing the old shape with the new shape.
+    private final ObjectProperty <ShapeType> selectedShapeType;//selecting types of shapes from choicebox.
     private final BooleanProperty inSelectMode;
+    private final SvgWriter svgWriter;
 
     public Model(){
         this.color = new SimpleObjectProperty<>();
         this.size = new SimpleDoubleProperty();
         inSelectMode = new SimpleBooleanProperty();
         this.selectedShapeType = new SimpleObjectProperty<>();
-       // svgWriter = new SvgWriter();
+        svgWriter = new SvgWriter();
     }
 
     public void initializeValues(ShapeType shapeType, Color color, double size){
@@ -35,10 +35,6 @@ public class Model {
 
     public Property<ShapeType> selectedShapeTypeProperty(){
         return selectedShapeType;
-    }
-
-    public void isInSelectMode(){
-        inSelectMode.getValue();
     }
 
     public List<Shape> getShapes(){
@@ -65,27 +61,20 @@ public class Model {
         shapes.add(newShape);
         history.push(newShape);
     }
-    public void Undo(){
-        Shape lastAddedShape = history.pop();
-        shapes.remove(lastAddedShape);
 
-        if (replacements.containsKey(lastAddedShape)){
-            shapes.add(replacements.get(lastAddedShape));
-        }else {
-            System.out.println("One Step Back");
-        }
-    }
-
-    public BooleanProperty inSelectModeProperty() {
+    /*
+    used when the user wants to change the color or the size of the existing shape
+     */
+    public BooleanProperty selectModeProperty() {
         return inSelectMode;
     }
     public boolean inSelectMode(){
         return inSelectMode.getValue();
     }
 
-    public Optional<Shape> getShapeByCoordinates(double x, double y) {
+    public Optional<Shape> getShapeCoordinates(double x, double y) {
         return shapes.stream()
-                .filter(shape -> shape.coordinatesInShapeArea(x,y))
+                .filter(shape -> shape.coordinatesInsideShape(x,y))
                 .reduce((first, second) -> second);
     }
 
@@ -96,7 +85,19 @@ public class Model {
         replacements.put(newShape, oldShape);
     }
 
-//    public void writeToSvg(){
-//        svgWriter.save(this);
-//    }
+    public void undo(){
+        Shape lastAddedShape = history.pop();
+        shapes.remove(lastAddedShape);
+
+        if (replacements.containsKey(lastAddedShape)){
+            shapes.add(replacements.get(lastAddedShape));
+        }else {
+            System.out.println("Undo to previous");
+        }
+    }
+
+
+    public void writeToSvg() {
+        svgWriter.save(this);
+    }
 }
